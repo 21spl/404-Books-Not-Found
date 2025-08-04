@@ -99,4 +99,27 @@ If you've already created your DB with Hibernate:
   - Admin credentials stored in DB (e.g., admin@gmail.com)
   - Or register as a Customer
  
-  
+
+## Screenshots
+
+### 🏠 Home Page
+![Home Page](screenshots/Home.jpg)
+
+### 🛒 Cart Page
+![Cart Page](screenshots/cart.jpg)
+
+### ✅ Checkout Page
+![Checkout Page](screenshots/checkout.jpg)
+
+### 📜 Purchase History
+![Purchase History](screenshots/purchase%20history.jpg)
+
+### 📚 Admin - View Books
+![View Books - Admin](screenshots/view%20books%20-%20admin.jpg)
+
+### 📦 Admin - View Purchases
+![View Purchases - Admin](screenshots/view-purchases-admin.jpg)
+
+### 🛠️ Admin Dashboard
+![Admin Dashboard](screenshots/admin%20dashboard.jpg)
+
