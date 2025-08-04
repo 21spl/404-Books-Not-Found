@@ -1,0 +1,52 @@
+
+
+# ========== NetBeans ==========
+nbproject/private/
+build/
+nbbuild/
+dist/
+nb-configuration.xml
+
+
+
+# ========== OS/System Files ==========
+.DS_Store
+Thumbs.db
+
+# Remove this if your dispatcher-servlet.xml is non-sensitive.
+src/main/webapp/WEB-INF/templates/dispatcher-servlet.xml
+
+
+# ========== Maven build output ==========
+target/
+*.log
+dependency-reduced-pom.xml
+release.properties
+buildNumber.properties
+
+# ========== WAR-specific ==========
+*.war
+
+# ========== NetBeans-specific ==========
+nbproject/private/
+build/
+nbbuild/
+dist/
+nb-configuration.xml
+
+# If using NetBeans auto-generated files for config:
+nbproject/genfiles.properties
+
+# ========== IDEs (safety) ==========
+*.iml
+*.ipr
+*.iws
+.idea/
+*.class
+
+
+
+# ========== Optional: temp or backup ==========
+*.bak
+*.swp
+*~

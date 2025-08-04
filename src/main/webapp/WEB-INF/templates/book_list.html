@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Browse</title>
+    <link rel="stylesheet" href="/resources/css/style.css?v=1.0.2">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+        body {
+            background-color: #000000;
+            color: #ffffff;
+            font-family: 'Segoe UI', sans-serif;
+            font-size: 1.3rem;
+        }
+        .card {
+            border: 1px solid rgba(138, 43, 226, 0.4);
+            box-shadow: 0 0 8px rgba(138, 43, 226, 0.2);
+            border-radius: 10px;
+            background-color: #000000;
+            color: #fff;
+        }
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+        }
+        .qty-input {
+            width: 60px;
+            text-align: center;
+            margin: 0 10px;
+        }
+        .add-to-cart .btn {
+            font-size: 1.3rem;
+            padding: 8px 12px;
+        }
+        .disabled-btn {
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+    </style>
+</head>
+<body>
+<!-- Navbar -->
+<div th:insert="fragments/navbar :: navbar"></div>
+
+<div class="container mt-4">
+    <h2 class="mb-4" th:if="${genre != null}" th:text="'Books in Genre: ' + ${genre}">Books in Genre</h2>
+    <h2 class="mb-4" th:if="${genre == null}">Search Results</h2>
+    <div th:if="${books != null}">
+        <div class="row" th:if="${!books.isEmpty()}">
+<!--for loop--> <div class="col-md-12 mb-4" th:each="book : ${books}">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title" th:text="${book.title}">Book Title</h5>
+                            <p class="card-text">
+                                <strong>Author:</strong> <span th:text="${book.author}">Author Name</span><br>
+                                <strong>Genre:</strong> <span th:text="${book.genre}">Genre</span><br>
+                                <strong>Price:</strong> ₹<span th:text="${book.price}">0.00</span><br>
+                                <strong>Copies Available:</strong> <span th:text="${book.copies}">0</span><br>
+                                <span class="text-danger fw-semibold" th:if="${book.copies == 0}">
+                                    Sorry, this book is out of stock.
+                                </span>
+                            </p>
+
+                            <!-- Show quantity controls and add-to-cart button only if logged in and book is in stock -->
+                            <div th:if="${session.loggedInUser != null and book.copies != 0}">
+                                <div class="quantity-controls">
+                                    <button class="btn btn-outline-secondary btn-sm btn-decrease" th:attr="data-max=${book.copies}">−</button>
+                                    <input type="text" class="form-control qty-input" value="1" readonly>
+                                    <button class="btn btn-outline-secondary btn-sm btn-increase" th:attr="data-max=${book.copies}">+</button>
+                                </div>
+                                <div class="add-to-cart text-end mt-2">
+                                    
+                                    <button class="btn btn-success btn-add-to-cart"
+                                            th:attr="data-book-id=${book.bookId}, data-max=${book.copies}">
+                                        <i class="fa-solid fa-cart-plus"></i> Add to Cart
+                                    </button>
+                                </div>
+                                        
+                                </div>
+                            </div>
+
+                            <!-- Show login prompt if not logged in -->
+                            <div th:if="${session.loggedInUser == null}">
+                                <a th:href="@{/login}" class="btn btn-outline-primary">
+                                    Login to add to cart
+                                </a>
+                            </div>
+
+                            <!-- Show disabled button if out of stock and logged in -->
+                            <div th:if="${session.loggedInUser != null and book.copies == 0}">
+                                <div class="add-to-cart text-end mt-2">
+                                    <button class="btn btn-success disabled-btn" disabled>
+                                        <i class="fa-solid fa-cart-plus"></i> Out of Stock
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                </div>
+            </div>
+        </div>
+        <div class="alert alert-warning" th:if="${books.isEmpty()}">
+            No books found for your search.
+        </div>
+    </div>
+
+
+
+
+<!-- Footer -->
+    <div class="footer text-center">
+        &copy; 2025 404BooksNotFound &nbsp;|&nbsp; Built with irony, styled with restraint.
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://kit.fontawesome.com/752b42e49f.js" crossorigin="anonymous"></script>
+    <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+
+
+
+
+<!-- Scripts -->
+<script src="https://kit.fontawesome.com/752b42e49f.js" crossorigin="anonymous"></script>
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+<script type="text/javascript" th:inline="javascript">
+/*<![CDATA[*/
+
+document.addEventListener("DOMContentLoaded", function () {
+    
+  // Increase Quantity
+    document.querySelectorAll(".btn-increase").forEach(function (button) {
+        
+        button.addEventListener("click", function () {
+            const input = this.parentElement.querySelector(".qty-input");
+            const max = parseInt(this.getAttribute("data-max"));
+            const current = parseInt(input.value) || 1;
+            if (current < max) {
+                input.value = current + 1;
+            } else {
+                Swal.fire("Out of Stock", 'Only ${max} copies available.', "warning");
+            }
+        });
+    });
+
+
+
+
+
+    // Decrease Quantity
+    document.querySelectorAll(".btn-decrease").forEach(function (button) {
+        button.addEventListener("click", function () {
+            const input = this.parentElement.querySelector(".qty-input");
+            const current = parseInt(input.value) || 1;
+            if (current > 1) {
+                input.value = current - 1;
+            }
+        });
+    });  
+    
+    
+    
+    
+  document.querySelectorAll(".btn-add-to-cart")
+    .forEach(button => button.addEventListener("click", function () {
+      const card = this.closest(".card");
+      const bookId = +this.getAttribute("data-book-id");
+      const max = +this.getAttribute("data-max");
+      let quantity = +card.querySelector(".qty-input").value || 1;
+
+      if (quantity > max || max === 0) {
+        Swal.fire("Out of Stock", `Only ${max} copies available.`, "error");
+        return;
+      }
+
+      // HERE is the correct Thymeleaf expression:
+      fetch(/*[[@{/add}]]*/ '/add', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `bookId=${encodeURIComponent(bookId)}&quantity=${encodeURIComponent(quantity)}`
+      })
+      .then(response => {
+        if (response.status === 401) {
+          return Swal.fire("Login Required", "Please login to add items to cart.", "info")
+                     .then(() => { window.location = /*[[@{/login}]]*/ '/login'; });
+        }
+        if (!response.ok) {
+          return response.text().then(text => { throw new Error(text || "Failed to add"); });
+        }
+        return response.text();
+      })
+      .then(msg => Swal.fire("Added!", msg || "Added successfully!", "success"))
+      .catch(err => Swal.fire("Error", err.message || "An error occurred.", "error"));
+    }));
+});
+
+/*]]>*/
+</script>
+
+
+
+
+
+
+
+</body>
+</html>
